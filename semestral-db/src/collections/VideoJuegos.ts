@@ -12,7 +12,8 @@ const VideoGames: CollectionConfig = {
         {
             name:'Nombre',
             type: 'text',
-            required: true
+            required: true,
+            unique: true
         },
         {
             name: 'Compania',
