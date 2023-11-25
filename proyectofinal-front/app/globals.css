@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'DotGothic16';
+  src: url('/src/DotGothic16/DotGothic16-Regular.ttf') format('truetype'); /* Asegúrate de ajustar la ruta y el formato según tus archivos */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+.ventanaElectronWeb{
+  background-color: #d5d5b2;
+  margin: 0 auto;
+  width: 500px;
+  height: 750px;
+}
+
+.ventanaElectron{
+  background-color: #d5d5b2;
+  margin: 0 auto;
+  width: 100%;
+  height: 100vh;
+}
+
+.inputBiselado{
+	border: 2px inset #efeed0;  /* Grosor del Borde */  /* Color del Borde */
+	color: black;  /* Color del texto */
+  padding: 1px 0;
+  width: 55%;
+}
+
+.btnBiselado{
+  background: #d5d5b2;  /* Fondo, debe ser más claro que el borde */
+	border: 2px outset #efeed0;  /* Grosor del Borde */  /* Color del Borde */
+	color: black;  /* Color del texto */
+	text-align: center;  /* Alineación del texto */
+  padding: 3px 6px;
+  transition: background .2s ease-in-out;
+}
+.btnBiselado:hover{
+  background: #b8b68e; 
+}
+.agregarImagenBiselado{
+  border: 2px inset #d2d1b3;  /* Grosor del Borde */  /* Color del Borde */
+	color: black;  /* Color del texto */
+
+}
