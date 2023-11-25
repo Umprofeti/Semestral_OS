@@ -21,7 +21,7 @@ query{
 `;
 
 export default async function Iniciopage() {
-    const { data, error } = await getClient().query({queryDatos});
+    const { data, error } = await getClient().query({query:queryDatos});
     console.log(data)
 
   return (
