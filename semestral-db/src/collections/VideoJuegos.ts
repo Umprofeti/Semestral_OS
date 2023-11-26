@@ -5,7 +5,8 @@ const VideoGames: CollectionConfig = {
     access: {
         read: () => true,
         create:()=>true,
-        update: () => true
+        update: () => true,
+        delete:()=>true
     },
     admin: {},
     fields: [
