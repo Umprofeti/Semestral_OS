@@ -5,11 +5,13 @@ import {
   queryDeleteGame,
   queryAddGame,
   queryModGame,
+  queryDatos
 } from "@/src/QUERY/querys";
-import { useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 
-export default function Formulario({ data }) {
+export default function Formulario() {
   //Constantes para manipular la información que introdusca el usuario
+  // const [data, cambiarData]=useState(null);
   const [inputBuscarJuego, cambiarInputBuscarJuego] = useState("");
   const [inputNombreJuego, cambiarInputNombreJuego] = useState("");
   const [inputCompania, cambiarInputCompania] = useState("");
@@ -22,12 +24,14 @@ export default function Formulario({ data }) {
   const [actualizarImg, cambiarActualizaImg] = useState(false);
 
   //funciones de mutaciones para agregar, modificar y borrar informacion en la base de datos
-  const [deleteGame, { data: dataDelete, loading, error }] =
+  const [deleteGame, { data: dataDelete, loading:loadingDelete, error: errorDelete }] =
     useMutation(queryDeleteGame);
   const [addGame, { data: dataAdd, loading: loadinggAdd, error: errorAdd }] =
     useMutation(queryAddGame);
   const [modGame, { data: dataMod, loading: loadinggMod, error: errorMod }] =
     useMutation(queryModGame);
+  const [searchData,{ data, loading, error }] =
+  useLazyQuery(queryDatos);
 
   //Guarda la información que introduzca el usuario en los inputs
   const onChange = (e) => {
@@ -83,7 +87,6 @@ export default function Formulario({ data }) {
             ImagenDelVideojuego: response.doc.id,
           },
         });
-        console.log(dataAdd);
         limpiarCampos();
       } catch (error) {
         console.error("Error:", error);
@@ -152,7 +155,7 @@ export default function Formulario({ data }) {
 
   //Funcion de borrar un Juego de acuerdo a su ID, el ID se obtiene al presionar "Buscar Juego"
   const eliminarGame = async () => {
-    if (inputNombreJuego !== "" && inputCompania !== ""&& inputLanzamiento !== "" && imagenSubir !== null) {
+    if (inputNombreJuego !== "" && inputCompania !== ""&& inputLanzamiento !== "" ) {
         try {
             await deleteGame({
               variables: {
@@ -175,6 +178,13 @@ export default function Formulario({ data }) {
     cambiarControlEncontrado(false);
     cambiarImagenJuego({});
     agregarImagenSeleccionada(null);
+    cambiarInputBuscarJuego("")
+  };
+
+  const buscarData = () => {
+    //Jonathan si ves esto luego hago lo de buscar solo un nombre el juego en la base de datos, tenía que salir
+    //jajajaj
+    searchData()
   };
 
   return (
@@ -214,6 +224,10 @@ export default function Formulario({ data }) {
         </div>
         <div className=" px-8 h-64 mx-auto">
           <CargarImagen
+          limpiarCampos={limpiarCampos}
+            inputNombreJuego={inputNombreJuego}
+            inputLanzamiento={inputLanzamiento}
+            inputCompania={inputCompania}
             imagenSubir={imagenSubir}
             agregarImagenSubir={agregarImagenSubir}
             cambiarControlEncontrado={cambiarControlEncontrado}
@@ -260,6 +274,7 @@ export default function Formulario({ data }) {
           autoComplete="off"
           value={inputBuscarJuego}
           onChange={onChange}
+          onFocus={()=>{buscarData()}}
           name="inputBuscar"
         />
         <button className="mx-1 btnBiselado" onClick={() => buscarJuego()}>

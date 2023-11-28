@@ -18,6 +18,12 @@ function makeClient() {
 
   return new NextSSRApolloClient({
     cache: new NextSSRInMemoryCache(),
+    defaultOptions:{
+      watchQuery:{
+        fetchPolicy:'network-only',
+        nextFetchPolicy:'cache-only'
+      }
+    },
     link:
       typeof window === "undefined"
         ? ApolloLink.from([

@@ -7,12 +7,11 @@ import localFont from 'next/font/local';
 const DotGothicFuente = localFont({src:"../fonts/DotGothic16/DotGothic16-Regular.ttf"})
 
 export default async function Iniciopage() {
-  const { data, error } = await getClient().query({query:queryDatos});
   
   return (
     <div style={DotGothicFuente.style} className='ventanaElectron text-zinc-950 subpixel-antialiased		'>
       <h1 className='text-center  py-4 text-xl font-semibold tracking-widest		'>Sistema de colección de videojuegos</h1>
-      <Formulario data={data} />
+      <Formulario />
     </div>
   )
 }

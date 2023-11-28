@@ -32,7 +32,7 @@
 	color: black;  /* Color del texto */
 	text-align: center;  /* Alineación del texto */
   padding: 3px 6px;
-  /* transition: background .2s ease-in-out; */
+  transition: background .1s ease-in-out;
 }
 .btnBiselado:hover{
   background: #b8b68e; 
