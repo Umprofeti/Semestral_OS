@@ -2,6 +2,8 @@ import React from 'react';
 import { Page, Document,Image, StyleSheet, View, Text } from '@react-pdf/renderer';
 import CODIMG from '@/src/img/iconmonstr-plus-6-96.png'
 
+
+
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',

@@ -9,6 +9,7 @@ import {
 } from "@/src/QUERY/querys";
 import { useMutation, useLazyQuery } from "@apollo/client";
 
+
 export default function Formulario() {
   //Constantes para manipular la información que introdusca el usuario
   // const [data, cambiarData]=useState(null);

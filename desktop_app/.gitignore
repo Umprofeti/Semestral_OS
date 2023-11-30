@@ -3,6 +3,9 @@
 
 # production
 /build
+/pdf/
+/temp/
+
 
 
 # local env files

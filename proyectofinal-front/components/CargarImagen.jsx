@@ -4,8 +4,27 @@ import Image from 'next/image'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import DocumentoPDF from './GeneadorPDF'
 
+
 export default function CargarImagen({limpiarCampos,cambiarActualizaImg,agregarImagenSeleccionada, imagenSeleccionada,agregarImagenSubir,controlEncontrado,imagenJuego,cambiarImagenJuego,cambiarControlEncontrado, inputNombreJuego, inputLanzamiento, inputCompania}) {
 
+
+  const handlePDF = async () => {
+    let data = {
+      inputNombreJuego,
+      inputCompania,
+      inputLanzamiento,
+      imagenJuego: imagenJuego.url
+    }
+   await fetch('http://localhost:3020/createpdf', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+   })
+  }
+  
+  
 
   const handleImagenSeleccionada=(e)=>{
     const file = e.target.files[0];
@@ -26,22 +45,11 @@ export default function CargarImagen({limpiarCampos,cambiarActualizaImg,agregarI
   return (
     <>
         {imagenSeleccionada !== null || controlEncontrado === true? 
-            <div className=' text-center'>
-                <Image src={imagenSeleccionada !== null? imagenSeleccionada : imagenJuego.url} width={720} height={480} alt='prueba'/>
+            <div className=' text-center object-contain'>
+                <Image src={imagenSeleccionada !== null? imagenSeleccionada : imagenJuego.url} width={720} className='max-w-[220px] max-h-[153px] mx-auto object-contain' height={480} alt='prueba'/>
                 
                 <button type='button' className='btnBiselado my-2' onClick={()=>quitarImagenes()}>Quitar imagen</button>
-                
-                <PDFDownloadLink 
-                document={<DocumentoPDF
-                  NombreDelVideoJuego={inputNombreJuego}
-                  CompaniaCreadora={inputCompania}
-                  LanzamientoJuego={inputLanzamiento}
-                  ImagenJuego={imagenJuego}
-                />}
-                fileName='Información Videojuego'>
-                  {({loading,error})=>(loading?<button>Cargando...</button>:<button className='btnBiselado mx-2'>Imprimir registro</button>)}
-                </PDFDownloadLink>
-
+                <button type='button' onClick={()=>handlePDF()} className='btnBiselado mx-2'>Imprimir registro</button>
                 <button type='button' className='btnBiselado my-2' onClick={()=>{limpiarCampos()}}>Limpiar</button>
 
         
