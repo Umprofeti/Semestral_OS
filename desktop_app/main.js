@@ -2,11 +2,24 @@
 const { app, BrowserWindow, Menu} = require("electron");
 const {print} = require('pdf-to-printer')
 const http = require('http');
+const printUnix = require('unix-print')
 
 const os = require('os');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 const fs = require('fs')
+
+
+const createFolders = () => {
+  if(!fs.existsSync('./pdf')){
+    fs.mkdirSync('./pdf')
+  }
+  if(!fs.existsSync('./temp')){
+    fs.mkdirSync('./temp')
+  }
+}
+
+createFolders()
 
 function descargarImagen(url) {
   return new Promise((resolve, reject) => {
@@ -44,6 +57,17 @@ const handlePDF = (NombreDelVideoJuego,
     createDocument.pipe(outputStream);
     createDocument.end()
 } 
+
+const printInOS = async (pdf) => {
+  if(os.platform() == 'linux'){
+    await printUnix.print(pdf).then(console.log('Imprimiendo desde linux'))
+  }
+  if(os.platform() == 'win32'){
+    await print(pdf).then(console.log("Imprimiendo desde windows"))
+  }
+  return true
+}
+
 // Crear una ventana del navegador
 app.on("ready", () => {
   const win = new BrowserWindow({
@@ -60,9 +84,7 @@ app.on("ready", () => {
   });
 
     // Elimina la barra de menú
-    //Menu.setApplicationMenu(null);
-   
-    
+  Menu.setApplicationMenu(null);
     
   win.loadURL("http://localhost:3000/");
 });
@@ -77,7 +99,7 @@ appExpress.post('/createpdf', (req, res) => {
   
   descargarImagen(imagenJuego).then(async (nombreArchivoTemporal)=>{
     handlePDF(inputNombreJuego, inputCompania, inputLanzamiento, `${nombreArchivoTemporal}`)
-    await print(`${__dirname}/pdf/ImprimirInformacion.pdf`).then(console.log("Imprimiendo"))
+    await printInOS(`${__dirname}/pdf/ImprimirInformacion.pdf`)
   })
  
 });
