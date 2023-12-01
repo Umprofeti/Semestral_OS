@@ -3,12 +3,10 @@ const { app, BrowserWindow, Menu} = require("electron");
 const {print} = require('pdf-to-printer')
 const http = require('http');
 const printUnix = require('unix-print')
-
 const os = require('os');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 const fs = require('fs')
-
 
 const createFolders = () => {
   if(!fs.existsSync('./pdf')){
@@ -41,21 +39,31 @@ function descargarImagen(url) {
 }
 
 const handlePDF = (NombreDelVideoJuego,
-    CompaniaCreadora,
-    LanzamientoJuego,
-    ImagenJuego) => {
-    let createDocument = new PDFDocument;
+  CompaniaCreadora,
+  LanzamientoJuego,
+  ImagenJuego) => {
+  let createDocument = new PDFDocument;
 
-    createDocument.text(NombreDelVideoJuego, 100, 100)
-    createDocument.text(CompaniaCreadora, 100,200)
-    createDocument.text(LanzamientoJuego, 100,300)
-    createDocument.image(ImagenJuego, 100,400)
-
-    let outpath = `${__dirname}/pdf/ImprimirInformacion.pdf`
-    let outputStream = fs.createWriteStream(outpath);
-
-    createDocument.pipe(outputStream);
-    createDocument.end()
+  createDocument.text("EXAMEN SEMESTRAL SISTEMAS OPERATIVOS 9LS-131 2023", 100, 50, {stroke: true, align: 'center'})
+  createDocument.text("Integrantes: Jonathan Rodríguez, Eric Soto, Abdel Lasso", 100, 100)
+  createDocument.text("Resultados:", 100, 160)
+  createDocument.text(`Nombre del Videojuego: ${NombreDelVideoJuego}`, 100, 200)
+  createDocument.text(`Compañía: ${CompaniaCreadora}`, 100,215)
+  createDocument.text(`Fecha de Lanzamiento: ${LanzamientoJuego}`, 100,230)
+  createDocument.text(`Imagen del Videojuego:`, 100,245)
+  createDocument.image(ImagenJuego, 100,260, {
+    width: 220,
+    height: 305,
+    scale: 0.25
+  })
+  let outpath = `${__dirname}/pdf/ImprimirInformacion.pdf`
+  let outputStream = fs.createWriteStream(outpath);
+  createDocument.pipe(outputStream);
+  createDocument.end()
+  outputStream.on('finish', ()=> {
+    outputStream.close()
+  })
+  return outpath
 } 
 
 const printInOS = async (pdf) => {
@@ -89,19 +97,19 @@ app.on("ready", () => {
   win.loadURL("http://localhost:3000/");
 });
 
-// En tu proceso principal de Electron
+// Servidor para captar los datos para realizar la impresión
 const express = require('express');
 const appExpress = express();
 appExpress.use(express.json());
 
-appExpress.post('/createpdf', (req, res) => {
+appExpress.post('/createpdf', async (req, res) => {
   let {inputNombreJuego, inputCompania, inputLanzamiento, imagenJuego} = req.body 
-  
-  descargarImagen(imagenJuego).then(async (nombreArchivoTemporal)=>{
-    handlePDF(inputNombreJuego, inputCompania, inputLanzamiento, `${nombreArchivoTemporal}`)
-    await printInOS(`${__dirname}/pdf/ImprimirInformacion.pdf`)
-  })
- 
+  const nombreArchivoTemporal = `./temp/imagen_temporal.jpg`
+  await descargarImagen(imagenJuego)
+  let pdf = handlePDF(inputNombreJuego, inputCompania, inputLanzamiento, nombreArchivoTemporal)
+  if(fs.existsSync(pdf)){
+    await printInOS(pdf).catch((e)=> console.log(e))
+  }
 });
 
 appExpress.listen(3020);
