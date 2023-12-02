@@ -1,5 +1,5 @@
 // Importar las dependencias
-const { app, BrowserWindow, Menu} = require("electron");
+const { app, BrowserWindow, Menu, dialog} = require("electron");
 const {print} = require('pdf-to-printer')
 const http = require('http');
 const printUnix = require('unix-print')
@@ -76,7 +76,7 @@ const printInOS = async (pdf) => {
   return true
 }
 
-// Crear una ventana del navegador
+// Crear una ventana
 app.on("ready", () => {
   const win = new BrowserWindow({
     width: 500,
@@ -111,5 +111,10 @@ appExpress.post('/createpdf', async (req, res) => {
     await printInOS(pdf).catch((e)=> console.log(e))
   }
 });
+
+appExpress.post('/error', (req, res)=> {
+  let {errorMesage} = req
+  dialog.showMessageBox({message: errorMesage, title: 'Error en el formulario', icon: './img/icon.png'})
+})
 
 appExpress.listen(3020);
