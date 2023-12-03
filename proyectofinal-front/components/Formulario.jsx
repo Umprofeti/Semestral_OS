@@ -68,7 +68,8 @@ export default function Formulario() {
   };
   //Funcion que sube la información a la base de datos
   const handleUpload = async () => {
-    if (inputNombreJuego !== "" && inputCompania !== ""&& inputLanzamiento !== "" && imagenSubir !== null) {
+
+    if(validarCampos(inputNombreJuego, inputCompania, inputLanzamiento, imagenSubir) === false){
       const formData = new FormData();
       formData.append("file", imagenSubir);
       const option = {
@@ -92,8 +93,34 @@ export default function Formulario() {
       } catch (error) {
         console.error("Error:", error);
       }
+    }else{
+      enviarError("Error, hay campos vacios.", "Mensaje del formulario")
     }
   };
+
+  //Peticion para mandar mensaje de errore
+  const enviarError= async(mensajeEnviar, tituloMensaje)=>{
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ errorMesage: mensajeEnviar, titleMesage: tituloMensaje }),
+    };
+
+    const responseError = await fetch("http://localhost:3020/error", option)
+      .then((res) => res.json())
+      .catch((error) => console.error("Error en la solicitud:", error));
+  }
+
+  //Validar campos vacios para subir, modificar
+  const validarCampos=(nombreI, companiaI, fechaI, imgI)=>{
+      if(nombreI !== "" && companiaI !== "" && fechaI !== "" && imgI !== null){
+        return false
+      }else{
+        return true
+      }
+  }
 
   //Formatea la fecha del payload que es formato "ISO 8601" a formato "YYYY-MM-DD"
   const formatearFecha = (fecha) => {
@@ -115,7 +142,7 @@ export default function Formulario() {
 
   //Funcion que actualiza una información en la base de datos
   const modificarGame = async () => {
-    if (inputNombreJuego !== "" && inputCompania !== ""&& inputLanzamiento !== "" && imagenSubir !== null) {
+    if(validarCampos(inputBuscarJuego, inputCompania, inputLanzamiento, imagenSubir) === false){
         const formData = new FormData();
         formData.append("file", imagenSubir);
         const option = {
@@ -151,22 +178,31 @@ export default function Formulario() {
         } catch (error) {
           console.error("Error en la operación:", error);
         }
+    }else{
+      if(idGame !== ""){
+        enviarError("Error, hay campos vacios.", "Mensaje del formulario")
+      }else{
+        enviarError("Error, no se ha buscado/seleccionado un juego", "Error en el formulario")
+      }
     }
   };
 
   //Funcion de borrar un Juego de acuerdo a su ID, el ID se obtiene al presionar "Buscar Juego"
   const eliminarGame = async () => {
-    if (inputNombreJuego !== "" && inputCompania !== ""&& inputLanzamiento !== "" ) {
+    // if (inputNombreJuego !== "" && inputCompania !== ""&& inputLanzamiento !== "" ) {
+    if (idGame!=="" ) {
         try {
             await deleteGame({
               variables: {
                 id: idGame,
               },
             });
-            limpiarCampos(0);
+            limpiarCampos();
           } catch (error) {
             console.error("Error en la operación:", error);
         }
+    }else{
+      enviarError("Error, no se ha buscado/seleccionado un juego", "Error en el formulario")
     }
   };
 
@@ -180,6 +216,7 @@ export default function Formulario() {
     cambiarImagenJuego({});
     agregarImagenSeleccionada(null);
     cambiarInputBuscarJuego("")
+    cambiarIdGame("");
   };
 
   const buscarData = () => {

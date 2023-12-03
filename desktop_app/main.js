@@ -113,8 +113,8 @@ appExpress.post('/createpdf', async (req, res) => {
 });
 
 appExpress.post('/error', (req, res)=> {
-  let {errorMesage} = req
-  dialog.showMessageBox({message: errorMesage, title: 'Error en el formulario', icon: './img/icon.png'})
+  let { errorMesage, titleMesage } = req.body;
+  dialog.showMessageBox({message: errorMesage, title: titleMesage, icon: './img/icon.png'})
 })
 
 appExpress.listen(3020);
