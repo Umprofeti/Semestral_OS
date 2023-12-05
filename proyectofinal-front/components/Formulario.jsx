@@ -175,6 +175,7 @@ export default function Formulario() {
               },
             });
           }
+          limpiarCampos()
         } catch (error) {
           console.error("Error en la operación:", error);
         }
