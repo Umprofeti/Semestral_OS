@@ -17,6 +17,11 @@ const nextConfig = {
                   ]
             }
         ]
+    },
+    env:{
+        GRAPHQL_URI:"http://localhost:3040/api/graphql",
+        API_KEY:"Users API-Key a9159675-39a2-4395-849a-d3afef710d4d",
+        MEDIA_URI: "http://localhost:3040/api/media"
     }
 }
 

@@ -78,7 +78,7 @@ export default function Formulario() {
       };
       try {
         const response = await fetch(
-          "http://localhost:3040/api/media",
+          process.env.MEDIA_URI,
           option
         ).then((res) => res.json());
         await addGame({
@@ -90,8 +90,10 @@ export default function Formulario() {
           },
         });
         limpiarCampos();
-      } catch (error) {
-        console.error("Error:", error);
+      } catch (errorAdd) {
+        if(errorAdd){
+          enviarError("Error, se ha intentado ingresar un nombre de un juego ya existente en la base de datos", "Error al guardar")
+        }
       }
     }else{
       enviarError("Error, hay campos vacios.", "Mensaje del formulario")
@@ -153,7 +155,7 @@ export default function Formulario() {
           //Primero verificamos si es necesario actualizar la imagen, sino solo actualiza el resto de campos
           if (actualizarImg) {
             const response = await fetch(
-              "http://localhost:3040/api/media",
+              process.env.MEDIA_URI,
               option
             ).then((res) => res.json());
             await modGame({
@@ -212,7 +214,7 @@ export default function Formulario() {
     cambiarInputNombreJuego("");
     cambiarInputCompania("");
     cambiarInputLanzamiento("");
-    agregarImagenSubir(null);
+    // agregarImagenSubir(null);
     cambiarControlEncontrado(false);
     cambiarImagenJuego({});
     agregarImagenSeleccionada(null);

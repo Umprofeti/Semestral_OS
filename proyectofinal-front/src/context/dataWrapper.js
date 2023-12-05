@@ -10,9 +10,9 @@ import {
 
 function makeClient() {
   const httpLink = new HttpLink({
-    uri: "http://localhost:3040/api/graphql",
+    uri: process.env.GRAPHQL_URI,
     headers:{
-      Authorization: 'Users API-Key a9159675-39a2-4395-849a-d3afef710d4d'
+      Authorization: process.env.API_KEY
     }
   });
 
